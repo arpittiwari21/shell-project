@@ -118,10 +118,16 @@ def main() -> None:
         add_help=True,
     )
     arg_parser.add_argument("-c", "--command", nargs=argparse.REMAINDER, help="Execute command string and exit")
+    arg_parser.add_argument("-g", "--gui", action="store_true", help="Launch Tkinter desktop graphical terminal interface")
     arg_parser.add_argument("-v", "--version", action="version", version=f"myOS Shell v{__version__}")
     arg_parser.add_argument("script", nargs="?", help="Optional shell script file to execute")
 
     args, unknown = arg_parser.parse_known_args()
+
+    if args.gui:
+        from shell.ui.gui import launch_gui
+        launch_gui()
+        sys.exit(0)
 
     context = ShellContext()
 

@@ -109,14 +109,16 @@ shell_project/
 │   └── ui/                      # Presentation layer
 │       ├── __init__.py
 │       ├── prompt.py            # Dynamic prompt generator (user@host:path$ + git branch)
-│       └── completer.py         # Readline tab auto-completion for paths and commands
+│       ├── completer.py         # Readline tab auto-completion for paths and commands
+│       └── gui.py               # Modern Tkinter desktop graphical terminal interface
 │
 ├── tests/                       # Complete unit and integration test suite
 │   ├── __init__.py
 │   ├── test_parser.py           # Lexer, quoting, variables, redirections, AST tests
 │   ├── test_builtins.py         # Unit tests for all native commands
 │   ├── test_pipelines.py        # IPC pipes, stdin/stdout chaining tests
-│   └── test_executor.py         # Process isolation, redirections, conditionals tests
+│   ├── test_executor.py         # Process isolation, redirections, conditionals tests
+│   └── test_gui.py              # Tkinter GUI and stream queuing tests
 │
 ├── legacy/                      # Preserved monolithic prototype
 │   └── one.py                   # Original single-file implementation
@@ -230,6 +232,18 @@ shell-project
 # or
 myos
 ```
+
+### Graphical Desktop Interface Mode (Tkinter GUI)
+Launch the modern desktop graphical terminal window:
+
+```bash
+# Using --gui flag
+python -m shell.main --gui
+
+# Or launching the GUI module directly:
+python -m shell.ui.gui
+```
+*Features quick action toolbar buttons (Help, Clear, System Info, Disk Space, Process Monitor, Folder Browser), asynchronous worker threads, ANSI color rendering, and command history recall.*
 
 ### Non-Interactive Command Execution (`-c`)
 Execute a single command string and return its exit code:
