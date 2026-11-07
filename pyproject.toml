@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shell-project"
+version = "1.0.0"
+description = "A modular, production-grade Unix-like Operating System Shell in Python following SOLID principles"
+readme = "README.md"
+authors = [
+    { name = "Arpit Tiwari" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = [
+    "psutil>=5.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+]
+windows = [
+    "pyreadline3>=3.4.0; platform_system == 'Windows'",
+]
+
+[project.scripts]
+shell-project = "shell.main:main"
+myos = "shell.main:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

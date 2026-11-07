@@ -1,0 +1,4 @@
+psutil>=5.9.0
+pyreadline3>=3.4.0; sys_platform == 'win32'
+pytest>=7.4.0
+pytest-cov>=4.1.0
