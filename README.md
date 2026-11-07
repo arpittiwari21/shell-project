@@ -10,6 +10,22 @@ Originally authored by **Arpit Tiwari** as a monolithic prototype (`one.py`), th
 
 ---
 
+## Graphical User Interface (GUI) Preview
+
+<div align="center">
+  <img src="docs/images/gui_terminal.png" alt="myOS Graphical Terminal" width="850" />
+  <p><em>myOS Terminal Desktop Interface with One Dark Theme, System Telemetry, and Live Execution</em></p>
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="docs/images/code_studio_dialog.png" alt="Code Studio Template Generator" width="650" />
+  <p><em>Code Studio: Interactive Dialog to Scaffold & Execute Predefined Programs (Python, C, C++, Java, JS)</em></p>
+</div>
+
+---
+
 ## 1. Architectural Highlights & SOLID Implementation
 
 ```
