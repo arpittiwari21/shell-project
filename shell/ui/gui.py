@@ -114,6 +114,7 @@ class ShellGUI:
         buttons = [
             ("Help", lambda: self.submit_command("help")),
             ("Clear", self.clear_terminal),
+            ("New Program...", self._open_code_dialog),
             ("System Info", lambda: self.submit_command("system")),
             ("Disk Space", lambda: self.submit_command("disk")),
             ("Processes", lambda: self.submit_command("ps")),
@@ -240,6 +241,148 @@ class ShellGUI:
         chosen = filedialog.askdirectory(initialdir=str(self.context.cwd))
         if chosen:
             self.submit_command(f'cd "{chosen}"')
+
+    def _open_code_dialog(self) -> None:
+        """Open graphical dialog to generate and execute predefined code templates."""
+        from shell.builtins.code_ops import CODE_TEMPLATES
+
+        dialog = tk.Toplevel(self.root)
+        dialog.title("Code Studio - Create & Run Predefined Program")
+        dialog.geometry("540x360")
+        dialog.resizable(False, False)
+        dialog.configure(bg=self.BG_DARK)
+        dialog.transient(self.root)
+        dialog.grab_set()
+
+        title_lbl = tk.Label(
+            dialog,
+            text="Generate Code Template & Execute",
+            bg=self.BG_DARK,
+            fg=self.COLOR_CYAN,
+            font=("Consolas", 12, "bold"),
+            pady=10,
+        )
+        title_lbl.pack(fill=tk.X)
+
+        form_frame = tk.Frame(dialog, bg=self.BG_DARK, padx=20, pady=5)
+        form_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Language dropdown
+        tk.Label(form_frame, text="Programming Language:", bg=self.BG_DARK, fg=self.FG_TEXT, font=("Consolas", 10)).grid(row=0, column=0, sticky="w", pady=6)
+        lang_var = tk.StringVar(value="python")
+        lang_combo = ttk.Combobox(
+            form_frame,
+            textvariable=lang_var,
+            values=["python", "c", "cpp", "java", "javascript"],
+            state="readonly",
+            font=("Consolas", 10),
+            width=28,
+        )
+        lang_combo.grid(row=0, column=1, sticky="w", pady=6)
+
+        # Template dropdown
+        tk.Label(form_frame, text="Predefined Program:", bg=self.BG_DARK, fg=self.FG_TEXT, font=("Consolas", 10)).grid(row=1, column=0, sticky="w", pady=6)
+        tmpl_var = tk.StringVar(value="add")
+        tmpl_combo = ttk.Combobox(
+            form_frame,
+            textvariable=tmpl_var,
+            values=["add", "age", "hello"],
+            state="readonly",
+            font=("Consolas", 10),
+            width=28,
+        )
+        tmpl_combo.grid(row=1, column=1, sticky="w", pady=6)
+
+        # Target filename entry
+        tk.Label(form_frame, text="Target Filename:", bg=self.BG_DARK, fg=self.FG_TEXT, font=("Consolas", 10)).grid(row=2, column=0, sticky="w", pady=6)
+        file_var = tk.StringVar(value="add_numbers.py")
+        file_entry = tk.Entry(
+            form_frame,
+            textvariable=file_var,
+            bg=self.BG_TERMINAL,
+            fg=self.FG_TEXT,
+            insertbackground=self.FG_TEXT,
+            font=("Consolas", 10),
+            relief=tk.FLAT,
+            bd=4,
+            width=30,
+        )
+        file_entry.grid(row=2, column=1, sticky="w", pady=6)
+
+        # Description / Info box
+        desc_label = tk.Label(
+            form_frame,
+            text="Template: Function calculating the sum of two numbers.",
+            bg=self.BG_TERMINAL,
+            fg=self.COLOR_GREEN,
+            font=("Consolas", 9),
+            wraplength=480,
+            justify=tk.LEFT,
+            padx=8,
+            pady=8,
+        )
+        desc_label.grid(row=3, column=0, columnspan=2, sticky="ew", pady=12)
+
+        def on_selection_change(*args):
+            l = lang_var.get()
+            t = tmpl_var.get()
+            if l in CODE_TEMPLATES and t in CODE_TEMPLATES[l]:
+                fname, _ = CODE_TEMPLATES[l][t]
+                file_var.set(fname)
+                if t == "add":
+                    desc_label.config(text=f"Template: {l.capitalize()} program calculating the sum of two numbers.")
+                elif t == "age":
+                    desc_label.config(text=f"Template: {l.capitalize()} program evaluating age validation & voting eligibility (>= 18).")
+                elif t == "hello":
+                    desc_label.config(text=f"Template: {l.capitalize()} starter Hello World program.")
+
+        lang_combo.bind("<<ComboboxSelected>>", on_selection_change)
+        tmpl_combo.bind("<<ComboboxSelected>>", on_selection_change)
+
+        btn_frame = tk.Frame(dialog, bg=self.BG_DARK, pady=12)
+        btn_frame.pack(fill=tk.X, side=tk.BOTTOM)
+
+        def create_only():
+            l = lang_var.get()
+            t = tmpl_var.get()
+            fn = file_var.get().strip() or "output.code"
+            dialog.destroy()
+            self.submit_command(f'template create {l} {t} "{fn}"')
+
+        def create_and_run():
+            l = lang_var.get()
+            t = tmpl_var.get()
+            fn = file_var.get().strip() or "output.code"
+            dialog.destroy()
+            self.submit_command(f'template create {l} {t} "{fn}" && runcode "{fn}"')
+
+        create_btn = tk.Button(
+            btn_frame,
+            text="Create File",
+            command=create_only,
+            bg=self.COLOR_BUTTON,
+            fg=self.FG_TEXT,
+            relief=tk.FLAT,
+            padx=12,
+            pady=4,
+            font=("Consolas", 10, "bold"),
+            cursor="hand2",
+        )
+        create_btn.pack(side=tk.RIGHT, padx=12)
+
+        run_btn = tk.Button(
+            btn_frame,
+            text="Create & Execute Now",
+            command=create_and_run,
+            bg=self.COLOR_BLUE,
+            fg="#ffffff",
+            relief=tk.FLAT,
+            padx=12,
+            pady=4,
+            font=("Consolas", 10, "bold"),
+            cursor="hand2",
+        )
+        run_btn.pack(side=tk.RIGHT, padx=6)
 
     def submit_command(self, cmd_text: str) -> None:
         """Insert and run a command programmatically."""

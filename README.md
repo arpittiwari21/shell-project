@@ -176,6 +176,11 @@ shell_project/
 - `history [-c]` : View or clear command history.
 - `help [command]` : Interactive documentation generated dynamically from the registry.
 
+### Code Generation & Multi-Language Execution
+- `template [list | create <lang> <template> [filename]]` : Generate predefined programs in Python, C, C++, Java, or JavaScript.
+  - Templates supported: `add` (Addition program), `age` (Age validation & voting eligibility), `hello` (Hello World).
+- `runcode <filename> [args...]` : Compile and execute source files seamlessly (`.py`, `.c`, `.cpp`, `.java`, `.js`) with live stream output.
+
 ### Advanced Shell Mechanics
 - **Pipes (`|`)**: Arbitrary multi-stage piping between builtins and external binaries (e.g. `cat file.txt | grep pattern | wc -l`).
 - **Redirection**:
